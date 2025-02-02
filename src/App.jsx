@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import Filter from './Filter';
 import PersonForm from './PersonForm';
 import Persons from './Persons';
@@ -8,6 +9,13 @@ const App = () => {
 	const [newName, setNewName] = useState('');
 	const [phoneNumber, setPhoneNumber] = useState('');
 	const [searchText, setSearchText] = useState('');
+
+	useEffect(() => {
+		axios.get('http://localhost:3001/persons').then((response) => {
+			if (response.status === 200) setPersons(response.data);
+			else console.error('get request failed');
+		});
+	}, []);
 
 	const handleNameChange = (event) => setNewName(event.target.value);
 
