@@ -4,9 +4,7 @@ import PersonForm from './PersonForm';
 import Persons from './Persons';
 
 const App = () => {
-	const [persons, setPersons] = useState([
-		{ name: 'Abc Xyz', phoneNumber: '123-456-7890' },
-	]);
+	const [persons, setPersons] = useState([]);
 	const [newName, setNewName] = useState('');
 	const [phoneNumber, setPhoneNumber] = useState('');
 	const [searchText, setSearchText] = useState('');
