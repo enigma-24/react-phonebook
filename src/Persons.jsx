@@ -5,7 +5,7 @@ export default function Persons({ peopleMatchingSearchText }) {
 		<>
 			{peopleMatchingSearchText.map((person) => (
 				<Person
-					key={person.name}
+					key={person.id}
 					name={person.name}
 					phoneNumber={person.number}
 				/>
