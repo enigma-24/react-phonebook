@@ -48,6 +48,23 @@ const App = () => {
 		person.name.toLowerCase().includes(searchText.toLowerCase())
 	);
 
+	const handleDeletePerson = (id) => {
+		const userResponse = window.confirm(
+			'Are you sure you want to remove this person?'
+		);
+
+		if (userResponse) {
+			phoneBookService
+				.deletePerson(id)
+				.then((response) =>
+					setPersons(persons.filter((person) => person.id !== id))
+				)
+				.catch((error) =>
+					alert('Something went wrong! Unable to delete this person')
+				);
+		}
+	};
+
 	return (
 		<div>
 			<h2>Phonebook</h2>
@@ -61,7 +78,10 @@ const App = () => {
 				onPhoneNumberChange={handlePhoneNumberChange}
 			/>
 			<h3>Numbers</h3>
-			<Persons peopleMatchingSearchText={peopleMatchingSearchText} />
+			<Persons
+				peopleMatchingSearchText={peopleMatchingSearchText}
+				onDeletePerson={handleDeletePerson}
+			/>
 		</div>
 	);
 };
