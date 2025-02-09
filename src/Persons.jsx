@@ -7,7 +7,7 @@ export default function Persons({ peopleMatchingSearchText }) {
 				<Person
 					key={person.name}
 					name={person.name}
-					phoneNumber={person.phoneNumber}
+					phoneNumber={person.number}
 				/>
 			))}
 		</>
