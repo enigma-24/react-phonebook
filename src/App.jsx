@@ -28,9 +28,19 @@ const App = () => {
 			alert(`${newName} is already added to phonebook`);
 			return;
 		}
-		setPersons(persons.concat({ name: newName, phoneNumber }));
-		setNewName('');
-		setPhoneNumber('');
+
+		const newPerson = { name: newName, number: phoneNumber };
+		axios
+			.post('http://localhost:3001/persons', newPerson)
+			.then((response) => {
+				setPersons(persons.concat(response.data));
+				setNewName('');
+				setPhoneNumber('');
+			})
+			.catch((error) => {
+				console.error('error while adding new person: ', error);
+				alert('Something went wrong! Unable to add new person');
+			});
 	};
 
 	const peopleMatchingSearchText = persons.filter((person) =>
