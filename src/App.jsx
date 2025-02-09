@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import Filter from './Filter';
 import PersonForm from './PersonForm';
 import Persons from './Persons';
+import phoneBookService from './services/phonebook';
 
 const App = () => {
 	const [persons, setPersons] = useState([]);
@@ -11,10 +11,12 @@ const App = () => {
 	const [searchText, setSearchText] = useState('');
 
 	useEffect(() => {
-		axios.get('http://localhost:3001/persons').then((response) => {
-			if (response.status === 200) setPersons(response.data);
-			else console.error('get request failed');
-		});
+		phoneBookService
+			.getAllContacts()
+			.then((contacts) => setPersons(contacts))
+			.catch((error) =>
+				alert('Something went wrong! Unable to get all contacts')
+			);
 	}, []);
 
 	const handleNameChange = (event) => setNewName(event.target.value);
@@ -30,15 +32,14 @@ const App = () => {
 		}
 
 		const newPerson = { name: newName, number: phoneNumber };
-		axios
-			.post('http://localhost:3001/persons', newPerson)
-			.then((response) => {
-				setPersons(persons.concat(response.data));
+		phoneBookService
+			.createNewContact(newPerson)
+			.then((data) => {
+				setPersons(persons.concat(data));
 				setNewName('');
 				setPhoneNumber('');
 			})
 			.catch((error) => {
-				console.error('error while adding new person: ', error);
 				alert('Something went wrong! Unable to add new person');
 			});
 	};
