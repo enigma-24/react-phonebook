@@ -25,9 +25,34 @@ const App = () => {
 
 	const handleAddName = (event) => {
 		event.preventDefault();
-		const matchingName = persons.find((person) => person.name === newName);
-		if (matchingName) {
-			alert(`${newName} is already added to phonebook`);
+		const matchingPerson = persons.find((person) => person.name === newName);
+		console.log('matchingPerson: ', matchingPerson);
+		if (matchingPerson) {
+			if (matchingPerson.number === phoneNumber)
+				alert(`${newName} is already added to phonebook`);
+			else {
+				const userResponse = window.confirm(
+					`${matchingPerson.name} is already added to phonebook, do you want to replace the old number with a new one?`
+				);
+
+				if (userResponse) {
+					phoneBookService
+						.updatePhoneNumber({ ...matchingPerson, number: phoneNumber })
+						.then((updatedPerson) => {
+							const tempArr = persons.filter(
+								(person) => person.id !== matchingPerson.id
+							);
+							setPersons([...tempArr, updatedPerson]);
+							setNewName('');
+							setPhoneNumber('');
+						})
+						.catch((error) =>
+							alert(
+								`Something went wrong! Unable to update the phone number of ${matchingPerson.name}`
+							)
+						);
+				}
+			}
 			return;
 		}
 

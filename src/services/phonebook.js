@@ -25,8 +25,21 @@ const deletePerson = (id) => {
 		);
 };
 
+const updatePhoneNumber = (person) => {
+	return axios
+		.put(`${baseUrl}/${person.id}`, person)
+		.then((response) => response.data)
+		.catch((error) =>
+			console.error(
+				`error while updating phone number for ${person.name}: `,
+				error
+			)
+		);
+};
+
 export default {
 	getAllContacts,
 	createNewContact,
 	deletePerson,
+	updatePhoneNumber,
 };
