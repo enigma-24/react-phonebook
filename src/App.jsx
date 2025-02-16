@@ -100,9 +100,12 @@ const App = () => {
 		if (userResponse) {
 			phoneBookService
 				.deletePerson(id)
-				.then((response) =>
-					setPersons(persons.filter((person) => person.id !== id))
-				)
+				.then((response) => {
+					setPersons(persons.filter((person) => person.id !== id));
+					setIsError(false);
+					setAlertMsg('Person has been removed from your phone book!');
+					resetAlertMsg();
+				})
 				.catch((error) => {
 					console.error('error: ', error);
 					setIsError(true);

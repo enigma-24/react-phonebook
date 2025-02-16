@@ -19,10 +19,15 @@ const createNewContact = (newPerson) => {
 const deletePerson = (id) => {
 	return axios
 		.delete(`${baseUrl}/${id}`)
-		.then((response) => response.data)
-		.catch((error) =>
-			console.error(`error while deleting person with id: ${id} `, error)
-		);
+		.then((response) => {
+			if (response.status === 200) return response.data;
+
+			throw new Error();
+		})
+		.catch((error) => {
+			console.error(`error while deleting person with id: ${id} `, error);
+			throw new Error();
+		});
 };
 
 const updatePhoneNumber = (person) => {
