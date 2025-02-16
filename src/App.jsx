@@ -3,12 +3,15 @@ import Filter from './Filter';
 import PersonForm from './PersonForm';
 import Persons from './Persons';
 import phoneBookService from './services/phonebook';
+import Notification from './Notification';
 
 const App = () => {
 	const [persons, setPersons] = useState([]);
 	const [newName, setNewName] = useState('');
 	const [phoneNumber, setPhoneNumber] = useState('');
 	const [searchText, setSearchText] = useState('');
+	const [isError, setIsError] = useState(true);
+	const [alertMsg, setAlertMsg] = useState(null);
 
 	useEffect(() => {
 		phoneBookService
@@ -28,9 +31,11 @@ const App = () => {
 		const matchingPerson = persons.find((person) => person.name === newName);
 		
 		if (matchingPerson) {
-			if (matchingPerson.number === phoneNumber)
-				alert(`${newName} is already added to phonebook`);
-			else {
+			if (matchingPerson.number === phoneNumber) {
+				setIsError(true);
+				setAlertMsg(`${newName} is already added to phonebook`);
+				resetAlertMsg();
+			} else {
 				const userResponse = window.confirm(
 					`${matchingPerson.name} is already added to phonebook, do you want to replace the old number with a new one?`
 				);
@@ -45,12 +50,20 @@ const App = () => {
 							setPersons([...tempArr, updatedPerson]);
 							setNewName('');
 							setPhoneNumber('');
+							setIsError(false);
+							setAlertMsg(
+								`${matchingPerson.name}'s phone number has been updated successfully`
+							);
+							resetAlertMsg();
 						})
-						.catch((error) =>
-							alert(
+						.catch((error) => {
+							console.error('error: ', error);
+							setIsError(true);
+							setAlertMsg(
 								`Something went wrong! Unable to update the phone number of ${matchingPerson.name}`
-							)
-						);
+							);
+							resetAlertMsg();
+						});
 				}
 			}
 			return;
@@ -63,9 +76,15 @@ const App = () => {
 				setPersons(persons.concat(data));
 				setNewName('');
 				setPhoneNumber('');
+				setIsError(false);
+				setAlertMsg('New Person added to phone book successfully');
+				resetAlertMsg();
 			})
 			.catch((error) => {
-				alert('Something went wrong! Unable to add new person');
+				console.error('error: ', error);
+				setIsError(true);
+				setAlertMsg('Something went wrong! Unable to add new person');
+				resetAlertMsg();
 			});
 	};
 
@@ -84,15 +103,21 @@ const App = () => {
 				.then((response) =>
 					setPersons(persons.filter((person) => person.id !== id))
 				)
-				.catch((error) =>
-					alert('Something went wrong! Unable to delete this person')
-				);
+				.catch((error) => {
+					console.error('error: ', error);
+					setIsError(true);
+					setAlertMsg('Something went wrong! Unable to delete this person');
+					resetAlertMsg();
+				});
 		}
 	};
+
+	const resetAlertMsg = () => setTimeout(() => setAlertMsg(null), 5000);
 
 	return (
 		<div>
 			<h2>Phonebook</h2>
+			<Notification message={alertMsg} isError={isError} />
 			<Filter searchText={searchText} onSearchText={setSearchText} />
 			<h2>add a new</h2>
 			<PersonForm
